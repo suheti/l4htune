@@ -117,22 +117,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Log.e("in run", "" + accZ);
             initAudioTrack();
 
-            int waveCounter = 0;
             float lastAccZ = 0;
             int bufferSize = 22050;
 
             while(!Thread.currentThread().isInterrupted()){
-                Log.e("in run", "" + accZ);
-                float currentAccZ = accZ;
-                float zStep = (currentAccZ - lastAccZ) / bufferSize;
+                float zStep = (accZ - lastAccZ) / bufferSize;
 
                 double mSound;
                 short[] mBuffer = new short[bufferSize];
                 for (int i = 0; i < mBuffer.length; i++) {
                     lastAccZ += zStep;
-                    mSound = Math.sin(2.0*Math.PI * (800*(lastAccZ+10.0)/20 + 200) * waveCounter/44100.0);
+                    mSound = Math.sin(2.0*Math.PI * (800*(lastAccZ+10.0)/20 + 200) * i/44100.0);
                     mBuffer[i] = (short) (mSound*Short.MAX_VALUE);
-                    waveCounter++;
                 }
 
                 audioTrack.write(mBuffer, 0, mBuffer.length); //This is a blocking call, returns at near the end of playback of the current buffer.
