@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.4.0_9a481fcb27a24cb521fcbd8d1028b77ebf04a352/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.4.0_d91261d19a1375c4b95493b784be410e88aeca61/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.4.0_6ae0db4431f3779d512562ffa65508fe07ca4973/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.4.0/support-annotations-23.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.4.0_38967dd2ece9b5b9fec8a429dbdcf21e57516f01/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/libs/internal_impl-23.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.4.0_a9f966740e342dbf7805516e06eff08108e38a1f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="45ca01af52bf2bc9fb2d6496eda2856e5065b783">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_41b74289b3390c60ba6e06d182034bd7ecaf4a39/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.4.0_d6cfe0b59c7b85c9af6e2292ee541b921bbd4482/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="1aacc44ebb799b16017345c04ccc10c0da67f428">
+        <dex dex="/Users/suheti/Projects/CS4347/L4HTune/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_4431d6d6c7c7db040ded1955a75f0559f6019c35/classes.dex" />
+    </item>
+
+</items>
