@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
 
         audioThread = new Thread(new SineWaveGenerator());
-//        audioThread.start(); // we can comment out this line to disable the continuous playback of varying pitch
+        audioThread.start(); // we can comment out this line to disable the continuous playback of varying pitch
     }
 
     @Override
