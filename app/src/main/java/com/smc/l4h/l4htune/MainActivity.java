@@ -14,16 +14,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
     private long lastUpdate;
 
-    private short[] c4, e4, g4, c5;
+    private short[] snare, e4, g4, c5;
 
     private volatile float accZ;
     private Thread audioThread;
-    private SineWaveGenerator audioRunnable;
+    private AudioTrack snareTrack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // keep screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        initAudioTrack();
+        initPercussion();
 
         senSensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -41,49 +43,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //region "PlaySomething" button
     public void onClick(View v){
-        Log.e("something", "something else");
-
-        playBuffer(e4);
-        playBuffer(e4);
-        playBuffer(e4);
+        Log.e("playButton", "clicked");
+        snareTrack.pause();
+        snareTrack.reloadStaticData();
+        snareTrack.play();
     }
 
-    private AudioTrack mAudioTrack;
+    private void initPercussion() {
+        short[] snare = makeSnare();
 
-    private void initAudioTrack() {
-        // AudioTrack definition
-        int mBufferSize = AudioTrack.getMinBufferSize(44100,
-                AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_8BIT);
-
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
+        snareTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
                 AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT,
-                mBufferSize, AudioTrack.MODE_STREAM);
-
-        mAudioTrack.play();
-
-        // initialise note buffers.
-        c4 = getBuffer(261, 44100);
-        e4 = getBuffer(329, 44100);
-        g4 = getBuffer(392, 44100);
-        c5 = getBuffer(523, 44100);
-
+                snare.length, AudioTrack.MODE_STATIC);
+        snareTrack.write(snare, 0, snare.length);
     }
 
-    private void playBuffer(short[] input){
-        mAudioTrack.write(input, 0, input.length);
-    }
-
-    private short[] getBuffer(double frequency, int duration){
+    private short[] makeSnare(){
         double mSound;
-        short[] mBuffer = new short[duration];
+        Random rand = new Random();
+        short[] mBuffer = new short[10000];
         for (int i = 0; i < mBuffer.length; i++) {
-            mSound = Math.sin((2.0*Math.PI * i/(44100/frequency)));
+            mSound = 2 * Math.PI * 250 * i / 44100 * (1 - i/44100.0) * 0.2;
             mBuffer[i] = (short) (mSound*Short.MAX_VALUE);
         }
+
+
         return mBuffer;
     }
-
     //endregion "PlaySomething" button
 
     @Override
@@ -101,9 +87,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
 
-        audioRunnable = new SineWaveGenerator();
-        audioThread = new Thread(audioRunnable);
-        audioThread.start();
+        audioThread = new Thread(new SineWaveGenerator());
+//        audioThread.start(); // we can comment out this line to disable the continuous playback of varying pitch
     }
 
     @Override
