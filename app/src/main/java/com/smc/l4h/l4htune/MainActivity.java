@@ -7,10 +7,12 @@ import android.hardware.SensorManager;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager senSensorManager;
@@ -27,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // keep screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         initAudioTrack();
 
@@ -110,29 +115,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     class SineWaveGenerator implements Runnable{
-        private AudioTrack audioTrack;
+        AudioTrack audioTrack;
 
         @Override
         public void run() {
-            Log.e("in run", "" + accZ);
             initAudioTrack();
 
-            float lastAccZ = 0;
-            int bufferSize = 22050;
+            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
+
+            double lastAccZ = 0;
+            int bufferSize = 441;
+            int delayOfChangeInSamples = 11012; // 44100 will be 1 sec delay
+            double formulaConstant = 2.0*Math.PI / 44100;
+
+            double currentAngle = 0;
 
             while(!Thread.currentThread().isInterrupted()){
-                float zStep = (accZ - lastAccZ) / bufferSize;
+                // update the axis value used for calculation gradually
+                // hence the frequency changes gradually
+                double zStep = (accZ - lastAccZ) / delayOfChangeInSamples;
 
                 double mSound;
                 short[] mBuffer = new short[bufferSize];
                 for (int i = 0; i < mBuffer.length; i++) {
-                    lastAccZ += zStep;
-                    mSound = Math.sin(2.0*Math.PI * (800*(lastAccZ+10.0)/20 + 200) * i/44100.0);
+
+                    mSound = Math.sin(currentAngle);
                     mBuffer[i] = (short) (mSound*Short.MAX_VALUE);
+
+                    /* freq range here is roughly 200~1000Hz
+                     * axix reading from accelerometer is -9.8 ~ +9.8 m/s^2 */
+                    currentAngle += formulaConstant * (40*(lastAccZ + 10) + 200);
+                    lastAccZ += zStep;
                 }
 
-                audioTrack.write(mBuffer, 0, mBuffer.length); //This is a blocking call, returns at near the end of playback of the current buffer.
-
+                audioTrack.write(mBuffer, 0, mBuffer.length);
             }
 
             //release the AudioTrack
@@ -144,25 +160,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         private void initAudioTrack(){
             int mBufferSize = AudioTrack.getMinBufferSize(44100,
                     AudioFormat.CHANNEL_OUT_MONO,
-                    AudioFormat.ENCODING_PCM_8BIT);
-            Log.e("in run", "" + mBufferSize);
-            Log.e("in run acc delay", ""+SensorManager.SENSOR_DELAY_NORMAL);
+                    AudioFormat.ENCODING_PCM_16BIT);
 
             audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
                     AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT,
                     mBufferSize, AudioTrack.MODE_STREAM);
 
             audioTrack.play();
-        }
-
-        private void playTune(){
-            double mSound;
-            short[] mBuffer = new short[4410];
-            for (int i = 0; i < mBuffer.length; i++) {
-                mSound = Math.sin((2.0*Math.PI * i/(44100/(2000*accZ/10 + 200))));
-                mBuffer[i] = (short) (mSound*Short.MAX_VALUE);
-            }
-            audioTrack.write(mBuffer, 0, mBuffer.length);
         }
     }
 }
