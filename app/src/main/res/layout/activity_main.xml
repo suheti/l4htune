@@ -10,18 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.smc.l4h.l4htune.MainActivity">
 
-    <Button
-        android:text="Change Scale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ScaleIndicator"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="26dp"
-        android:id="@+id/button"
-        android:onClick="onClick"
-        android:textAllCaps="false" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,5 +21,42 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textSize="20sp" />
+
+    <Button
+        android:text="Change Scale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:onClick="onClick"
+        android:textAllCaps="false"
+        android:layout_below="@+id/ScaleIndicator"
+        android:layout_alignLeft="@+id/ScaleIndicator"
+        android:layout_alignStart="@+id/ScaleIndicator"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:text="oct up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="29dp"
+        android:layout_marginStart="29dp"
+        android:id="@+id/button4"
+        android:textSize="10sp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/button"
+        android:layout_toEndOf="@+id/button"
+        android:onClick="octaveUp" />
+
+    <Button
+        android:text="oct down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/raiseOctaveButton"
+        android:textSize="10sp"
+        android:layout_below="@+id/button4"
+        android:layout_alignLeft="@+id/button4"
+        android:layout_alignStart="@+id/button4"
+        android:layout_marginTop="20dp"
+        android:onClick="octaveDown" />
 
 </RelativeLayout>

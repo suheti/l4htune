@@ -15,6 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager senSensorManager;
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
             case 3:
                 diatonicLookupTable = e5MinorScale;
-                scaleIndicatorTextView.setText("E5 Major");
+                scaleIndicatorTextView.setText("E5 Minor");
                 break;
             default:
                 diatonicLookupTable = c5MajorScale;
@@ -131,6 +134,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return mBuffer;
     }
 
+
+    public void octaveUp(View v){
+        if(diatonicLookupTable[diatonicLookupTable.length-1] + 12 <= 127){
+            int[] temp = Arrays.copyOf(diatonicLookupTable, diatonicLookupTable.length);
+            for(int i = 0; i < temp.length; i++){
+                temp[i] += 12;
+            }
+            diatonicLookupTable = temp;
+        } else {
+            Toast.makeText(this, "Already at highest possible octave", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void octaveDown(View v){
+        if(diatonicLookupTable[0] - 12 >= 0){
+            int[] temp = Arrays.copyOf(diatonicLookupTable, diatonicLookupTable.length);
+            for(int i = 0; i < temp.length; i++){
+                temp[i] -= 12;
+            }
+            diatonicLookupTable = temp;
+        } else {
+            Toast.makeText(this, "Already at lowest possible octave", Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         accX = sensorEvent.values[0];
@@ -168,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     class SineWaveGenerator implements Runnable{
         AudioTrack audioTrack;
+        short[] zeroBuffer; // this will be a buffer of 0s to help eliminate the trailing clicking sound when a playback ends.
 
         @Override
         public void run() {
@@ -189,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             //There are 8 values in this array, corresponding to the 8 notes.
             double[] xMaxValues = {4.449106897, 6.929646456, 8.731863937, 9.679345738, 9.679345738, 8.731863937, 6.929646456, 4.449106897};
 
-            double lastAccZ = 0;
             int bufferSize = 441;
             int delayOfFreqChangeInSamples = 1000; // 44100 will be 1 sec delay
             double formulaConstant = 2.0*Math.PI / 44100;
@@ -207,7 +234,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             while(!Thread.currentThread().isInterrupted()){
                 if(!isPlayingNote){
                     if(!isRecoveringFromStop){
-                        // pause and flush makes sure there's no clicking sound at the beginning
+                        // We write to the AudioTrack some trailing samples to eliminate the potential clicking sound
+                        // at the end of a playback.
+                        double amplitudeCoefficientStep = (0 - currentAmplitudeCoefficient) / bufferSize;
+                        double mSound;
+                        for (int i = 0; i < mBuffer.length; i++) {
+                            mSound = Math.sin(currentAngle);
+                            mBuffer[i] = (short) (mSound*Short.MAX_VALUE * currentAmplitudeCoefficient);
+                            currentAngle += formulaConstant * lastFreq;
+                            currentAmplitudeCoefficient += amplitudeCoefficientStep;
+                        }
+                        audioTrack.write(mBuffer, 0, mBuffer.length);
+                        audioTrack.write(zeroBuffer, 0, zeroBuffer.length);
+
+                        // Pause and Flush makes sure there's no clicking sound at the beginning
                         // of the next round of playback. All residual samples from the last playback
                         // are flushed.
                         audioTrack.pause();
@@ -282,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int mBufferSize = AudioTrack.getMinBufferSize(44100,
                     AudioFormat.CHANNEL_OUT_MONO,
                     AudioFormat.ENCODING_PCM_16BIT);
+            zeroBuffer = new short[mBufferSize]; //as guaranteed by Java standard, new arrays of basic types will have initial values of 0
 
             Log.e("from initAudioTrack()", "the minBufferSize is " + mBufferSize);
 
